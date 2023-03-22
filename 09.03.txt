@@ -1,0 +1,47 @@
+Consider the following 3-layer neural network.
+
+\[
+\hat{y} = f(x) = g(W_3\sigma(W_2\sigma(W_1x)))
+\]
+
+Suppose $x \in \mathbb{R}^d$, $W_1 \in \mathbb{R}^{d_1 \times d}$, $W_2 \in \mathbb{R}^{d_2 \times d_1}$, $W_3 \in \mathbb{R}^{k \times d_2}$ i.e. $f: \mathbb{R}^d \rightarrow \mathbb{R}^k$, Let $\sigma(z) = [\sigma(z_1), ..., \sigma(z_n)]$ for any $z \in \mathbb{R}^n$ where $\sigma(z) = \frac{1}{1 + e^{-z}}$ is the sigmoid (logistic) activation function and $g(z_i) = \frac{exp(z_i)}{\sum_{i=1}^k exp(z_i)}$ is the softmax function. Suppose the true pair is $(x, y)$ where $y \in \{0, 1\}^k$ with exactly one of the entries equal to 1, and you are working with the cross-entropy loss function given below,
+
+\[
+L(x, y) = -\sum_{i=1}^k y \text{log}(\hat{y})
+\]
+    \item Derive backpropagation updates for the above neural network. (5 pts)
+
+#TODO: continue my work below to finish \frac{\partial L}{\partial W_{3_{ij}}}
+To perform backpropagation, we need to compute the gradients of the loss function with respect to the parameters of the network. Starting by computing the gradients of the loss with respect to the output $\hat{y}$:
+
+\begin{align*}
+\frac{\partial L}{\partial \hat{y}_i} 
+&= -\frac{y_j}{\hat{y}_j}.
+\end{align*}
+
+Using the chain rule, we can now compute the gradients of the loss with respect to the weights $W_3$:
+
+\begin{align*}
+\frac{\partial L}{\partial W_{3_{ij}}} &= \sum_{l=1}^k \frac{\partial L}{\partial \hat{y}l} \frac{\partial \hat{y}_{l}}{\partial z_{l}} \frac{\partial z_{l}}{\partial  W_{3_{ij}}} \\
+&= \sum_{l=1}^k \left(-\frac{y_l}{\hat{y}_{l}}\right) \frac{\partial}{\partial z_{l}} \left(\frac{e^{z_l}}{\sum_{i=1}^k e^{z_i}}\right) \frac{\partial z_{l}}{\partial  W_{3_{ij}}} \\
+& = \sum_{l=1}^k \left(-\frac{y_l}{\hat{y}l}\right) \hat{y}_l (1-\hat{y}l) \frac{\partial z_{l}}{\partial  W_{3_{ij}}}
+\end{align*}
+================
+
+\begin{align*}
+\frac{\partial L}{\partial W_{2_{ij}}} &= \sum_{l=1}^k \frac{\partial L}{\partial \hat{y}l} \frac{\partial \hat{y}l}{\partial z_l} \sum{m=1}^{d_2} \frac{\partial z_l}{\partial a{lm}} \frac{\partial a_{lm}}{\partial W_{2_{ij}}} \\
+&= \sum_{l=1}^k \left(-\frac{y_l}{\hat{y}l}\right) \hat{y}l (1-\hat{y}l) \sum{m=1}^{d_2} W{3{lm}}\sigma'(z_{lm}) \frac{\partial z_{lm}}{\partial a_{lm}} \frac{\partial a_{lm}}{\partial W_{2_{ij}}} \\
+&= \sum_{l=1}^k \left(-\frac{y_l}{\hat{y}l}\right) \hat{y}l (1-\hat{y}l) \sum{m=1}^{d_2} W{3{lm}}\sigma'(z_{lm}) W_{2_{mj}}\sigma'(z_{jm}) \frac{\partial z_{jm}}{\partial W_{2_{ij}}} \\
+&= \sum_{l=1}^k \left(-\frac{y_l}{\hat{y}l}\right) \hat{y}l (1-\hat{y}l) \sum{m=1}^{d_2} W{3{lm}}\sigma'(z_{lm}) W_{2_{mj}}\sigma'(z_{jm}) \sigma(z_{j}) (1-\sigma(z_{j})) x_i\\
+&= \sum_{l=1}^k \left(-\frac{y_l}{\hat{y}l}\right) \hat{y}l (1-\hat{y}l) \sum{m=1}^{d_2} W{3{lm}}\sigma'(z_{lm}) W_{2_{mj}}\sigma'(z_{jm}) h_{i} \\
+\end{align*}
+\begin{align*}
+\frac{\partial L}{\partial W_{2_{ij}}} &= \sum_{l=1}^{d_3} \frac{\partial L}{\partial z_{l}} \frac{\partial z_{l}}{\partial W_{2_{ij}}} \\
+&= \sum_{l=1}^{d_3} \left(\sum_{m=1}^k \frac{\partial L}{\partial \hat{y}m} \frac{\partial \hat{y}m}{\partial z_l} \right) \frac{\partial z{l}}{\partial W{2_{ij}}} \\
+&= \sum_{l=1}^{d_3} \left(\sum_{m=1}^k \frac{\partial L}{\partial z_m} \frac{\partial z_m}{\partial \hat{y}l} \frac{\partial \hat{y}l}{\partial z_l} \right) \frac{\partial z{l}}{\partial W{2_{ij}}} \\
+&= \sum_{l=1}^{d_3} \left(\sum_{m=1}^k \frac{\partial L}{\partial z_m} W_{3_{ml}} \hat{y}l (1-\hat{y}l) \right) \frac{\partial z{l}}{\partial W{2_{ij}}} \\
+&= \sum_{l=1}^{d_3} \left(\sum_{m=1}^k -\frac{y_m}{\hat{y}m} W{3_{ml}} \hat{y}l (1-\hat{y}l) \right) \frac{\partial}{\partial W{2{ij}}} \sigma(W_{1_{l \cdot}} x) \\
+&= \sum_{l=1}^{d_3} \left(\sum_{m=1}^k -\frac{y_m}{\hat{y}m} W{3_{ml}} \hat{y}l (1-\hat{y}l) \right) \sigma(W{1{l \cdot}} x) (1 - \sigma(W_{1_{l \cdot}} x)) x_{i}.
+\end{align*}
+
+Where $W_{1_{l \cdot}}$ denotes the $l$-th row of $W_1$.
