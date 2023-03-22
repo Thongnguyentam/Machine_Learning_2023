@@ -1,0 +1,210 @@
+\documentclass[a4paper]{article}
+\usepackage{geometry}
+\usepackage{graphicx}
+\usepackage{natbib}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsthm}
+\usepackage{paralist}
+\usepackage{epstopdf}
+\usepackage{tabularx}
+\usepackage{longtable}
+\usepackage{multirow}
+\usepackage{multicol}
+\usepackage[hidelinks]{hyperref}
+\usepackage{fancyvrb}
+\usepackage{algorithm}
+\usepackage{algorithmic}
+\usepackage{float}
+\usepackage{paralist}
+\usepackage[svgname]{xcolor}
+\usepackage{enumerate}
+\usepackage{array}
+\usepackage{times}
+\usepackage{url}
+\usepackage{fancyhdr}
+\usepackage{comment}
+\usepackage{environ}
+\usepackage{times}
+\usepackage{textcomp}
+\usepackage{caption}
+\usepackage{multirow}
+\usepackage{bbm}
+
+% \usepackage{kky}
+
+\newcounter{thm}
+\ifx\fact\undefined
+\newtheorem{fact}[thm]{Fact}
+\fi
+
+\newcommand{\pen}{{\rm pen}}
+\newcommand{\diag}{{\rm diag}}
+\newcommand{\diam}{{\bf{\rm diam}}}
+\newcommand{\spann}{{\bf{\rm span}}}
+\newcommand{\nulll}{{\bf{\rm null}}}
+% Distributions
+\newcommand{\Bern}{{\bf{\rm Bern}}\,} % support of a function
+\newcommand{\Categ}{{\bf{\rm Categ}}\,} % support of a function
+\newcommand{\Mult}{{\bf{\rm Mult}}\,} % support of a function
+\newcommand{\Dir}{{\bf{\rm Dir}}\,} % support of a function
+\newcommand{\horizontalline}{\noindent\rule[0.5ex]{\linewidth}{1pt}}
+\newcommand{\HRule}{\rule{\linewidth}{0.5mm}} 
+\newcommand{\Hrule}{\rule{\linewidth}{0.3mm}}
+\newcommand{\HRuleN}{\HRule\\} 
+\newcommand{\HruleN}{\Hrule\\}
+\newcommand{\superscript}[1]{{\scriptsize \ensuremath{^{\textrm{#1}}}}}
+\newcommand{\supindex}[2]{#1^{(#2)}}
+\newcommand{\xii}[1]{\supindex{x}{#1}}
+\newcommand{\yii}[1]{\supindex{y}{#1}}
+\newcommand{\zii}[1]{\supindex{z}{#1}}
+\newcommand{\Xii}[1]{\supindex{X}{#1}}
+\newcommand{\Yii}[1]{\supindex{Y}{#1}}
+\newcommand{\Zii}[1]{\supindex{Z}{#1}}
+\newcommand{\NN}{\mathbb{N}} % Natural numbers
+\newcommand{\Ncal}{\mathcal{N}}
+\newcommand{\Dcal}{\mathcal{D}}
+\newcommand{\Lcal}{\mathcal{L}}
+\newcommand{\Xcal}{\mathcal{X}}
+\newcommand{\Pcal}{\mathcal{P}}
+\newcommand{\Jcal}{\mathcal{J}}
+\newcommand{\Rcal}{\mathcal{R}}
+\newcommand{\indfone}{\mathbbm{1}}
+\newcommand{\gb}{\mathbf{g}}
+\newcommand{\Hb}{\mathbf{H}}
+\newcommand{\Db}{\mathbf{D}}
+\newcommand*{\zero}{{\bf 0}}
+\newcommand*{\one}{{\bf 1}}
+
+% Stuff mostly appearing in Statistics
+\newcommand{\Xbar}{\bar{X}}
+\newcommand{\Ybar}{\bar{Y}}
+\newcommand{\Zbar}{\bar{Z}}
+\newcommand{\Xb}{\mathbf{X}}
+
+
+%%%%  brackets
+\newcommand{\inner}[2]{\left\langle #1,#2 \right\rangle}
+\newcommand{\rbr}[1]{\left(#1\right)}
+\newcommand{\sbr}[1]{\left[#1\right]}
+\newcommand{\cbr}[1]{\left\{#1\right\}}
+\newcommand{\nbr}[1]{\left\|#1\right\|}
+\newcommand{\abr}[1]{\left|#1\right|}
+
+% derivatives and partial fractions
+\newcommand{\differentiate}[2]{ \frac{ \ud #2}{\ud #1} }
+\newcommand{\differentiateat}[3]{ \frac{ \ud #2}{\ud #1}  \Big|_{#1=#3} }
+\newcommand{\partialfrac}[2]{ \frac{ \partial #2}{\partial #1} }
+\newcommand{\partialfracat}[3]{ \frac{ \partial #2}{\partial #1} \Big|_{#1=#3} }
+\newcommand{\partialfracorder}[3]{ \frac{ \partial^{#3} #2}{\partial^{#3} #1} }
+\newcommand{\partialfracatorder}[4]{ \frac{ \partial^{#3} #2}{\partial^{#3} #1} \Big|_{#1=#4} }
+
+\urlstyle{rm}
+
+\setlength\parindent{0pt} % Removes all indentation from paragraphs
+\theoremstyle{definition}
+\newtheorem{definition}{Definition}[]
+\newtheorem{conjecture}{Conjecture}[]
+\newtheorem{example}{Example}[]
+\newtheorem{theorem}{Theorem}[]
+\newtheorem{lemma}{Lemma}
+\newtheorem{proposition}{Proposition}
+\newtheorem{corollary}{Corollary}
+
+
+\floatname{algorithm}{Procedure}
+\renewcommand{\algorithmicrequire}{\textbf{Input:}}
+\renewcommand{\algorithmicensure}{\textbf{Output:}}
+\newcommand{\abs}[1]{\lvert#1\rvert}
+\newcommand{\norm}[1]{\lVert#1\rVert}
+\newcommand{\RR}{\mathbb{R}}
+\newcommand{\EE}{\mathbb{E}}
+\newcommand{\PP}{\mathbb{P}}
+\newcommand{\CC}{\mathbb{C}}
+\newcommand{\Nat}{\mathbb{N}}
+\newcommand{\br}[1]{\{#1\}}
+\DeclareMathOperator*{\argmin}{arg\,min}
+\DeclareMathOperator*{\argmax}{arg\,max}
+\renewcommand{\qedsymbol}{$\blacksquare$}
+
+\definecolor{dkgreen}{rgb}{0,0.6,0}
+\definecolor{gray}{rgb}{0.5,0.5,0.5}
+\definecolor{mauve}{rgb}{0.58,0,0.82}
+
+\newcommand{\Var}{\mathrm{Var}}
+\newcommand{\Cov}{\mathrm{Cov}}
+
+\newcommand{\vc}[1]{\boldsymbol{#1}}
+\newcommand{\xv}{\vc{x}}
+\newcommand{\Sigmav}{\vc{\Sigma}}
+\newcommand{\alphav}{\vc{\alpha}}
+\newcommand{\muv}{\vc{\mu}}
+
+\newcommand{\red}[1]{\textcolor{red}{#1}}
+
+\def\x{\mathbf x}
+\def\y{\mathbf y}
+\def\w{\mathbf w}
+\def\v{\mathbf v}
+\def\E{\mathbb E}
+\def\V{\mathbb V}
+
+% TO SHOW SOLUTIONS, include following (else comment out):
+\newenvironment{soln}{
+    \leavevmode\color{blue}\ignorespaces
+}{}
+
+\hypersetup{
+%    colorlinks,
+    linkcolor={red!50!black},
+    citecolor={blue!50!black},
+    urlcolor={blue!80!black}
+}
+
+\geometry{
+  top=1in,            % <-- you want to adjust this
+  inner=1in,
+  outer=1in,
+  bottom=1in,
+  headheight=3em,       % <-- and this
+  headsep=2em,          % <-- and this
+  footskip=3em,
+}
+
+
+\pagestyle{fancyplain}
+\lhead{\fancyplain{}{Homework 5}}
+\rhead{\fancyplain{}{CS 760 Machine Learning}}
+\cfoot{\thepage}
+
+\title{\textsc{Homework 5}} % Title
+
+%%% NOTE:  Replace 'NAME HERE' etc., and delete any "\red{}" wrappers (so it won't show up as red)
+
+\author{
+\red{$>>$NAME HERE$<<$} \\
+\red{$>>$ID HERE$<<$}\\
+}
+
+\date{}
+
+\begin{document}
+
+\maketitle 
+
+
+\textbf{Instructions:}
+Use this latex file as a template to develop your homework. We are changing our reproducibility policy on code submissions going forward. \textbf{Instead of uploading it on GitHub, please submit a separate zip file that contains your code. You will submit two files to Canvas, one is your pdf, and the other one is a zip file.} Late submissions may not be accepted. You can choose any programming language (i.e. python, R, or MATLAB). Please check Piazza for updates about the homework.
+\vspace{0.1in}
+
+This homework is more difficult than previous homework. The total amount of points for this homework is \textbf{150}. The extra credit reflects the level of difficulty.
+
+\vspace{0.1in}
+
+\input{prob1}
+\input{prob2}
+
+\bibliographystyle{apalike}
+\end{document}
+
+
