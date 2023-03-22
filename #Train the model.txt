@@ -1,0 +1,108 @@
+#Train the model
+accuracy_list = []
+for epoch in range(num_epochs):
+    # batch_index, (example_data, example_targets)
+    # labels is a tensor of shape (batch_size,) that contains the true labels for a batch of images.
+    # images.shape = torch.Size([128, 1, 28, 28])
+    train_acc = 0
+    for i, (images, labels) in enumerate(train_loader):
+        #flatten the images:
+        images = images.reshape(-1, input_size).T #turn into a vector
+        labels = labels.numpy() # converting the labels tensor from a PyTorch tensor object to a numpy array.
+
+        #convert labels to one-hot vectors
+        y = np.zeros((num_classes, batch_size))
+        batch_size_i = labels.shape[0]
+        y[labels, np.arange(batch_size_i)] = 1 #last batch of batch_size = 128 is 96
+        if batch_size_i < batch_size:
+            y = np.delete(y, np.arange(batch_size_i, batch_size), axis = 1) #delete the remaining unsed columns
+        x, y = torch.tensor(images), torch.tensor(y) #convert 'images' and 'y' into PyTorch tensors.
+
+        #forward pass 
+        a1, a2, y_hat = forward(x)
+
+        #compute the loss
+        loss = -torch.sum(y * torch.log(y_hat))
+        #backward pass
+        delta3 = (y_hat - y).float() #change from double to float 
+        delta2 = torch.matmul(W3.T, delta3)* a2 * (1- a2)
+        delta1 = torch.matmul(W2.T, delta2) * a1 * (1- a1)
+
+        dW3 = torch.matmul(delta3, a2.T) #(y_hat - y)a2^T
+        dW2 = torch.matmul(delta2, a1.T) # W3.T(y_hat - y)a2(1- a2)a1.T
+        dw1 = torch.matmul(delta1, x.T) # W2.T*delta2*a1*(1- a1)x.T
+
+        #update weights using SGD  
+        W1 -= learning_rate* dw1 / batch_size
+        W2 -= learning_rate* dW2 / batch_size
+        W3 -= learning_rate * dW3 / batch_size
+
+        #calculate accuracy:
+        train_acc += torch.sum(torch.argmax(y_hat, dim = 0) == torch.argmax(y,dim = 0)).item()
+    
+    #add each ephoch's accuracy
+    accuracy_list.append(train_acc/len(train_loader.dataset))
+
+    #evaluate
+    #test
+    correct = 0
+    total = 0 
+    test_losses = []
+    accuracy = []
+    # is a context manager that temporarily disables gradient computation during model inference. 
+    # reduce memory consumption and computation time since gradients are not needed for inference.
+    # is used to compute test accuracy and loss during the testing phase.
+    # when you are sure that you will not call Tensor.backward() 
+    with torch.no_grad():
+        for images, labels in test_loader:
+            #Flatten the images
+            images = images.reshape(-1, input_size).T
+            labels = labels.numpy()
+
+            #convert labels into one-hot vectors
+            y = np.zeros((num_classes, batch_size))
+            batch_size_j = labels.shape[0]
+            y[labels,np.arange(batch_size_j)] = 1
+            if batch_size_j < batch_size:
+                y = np.delete(y, np.arange(batch_size_j, batch_size), axis = 1)
+            
+            x, y = torch.tensor(images), torch.tensor(y)
+
+            #forward pass
+            _, _, y_hat = forward(x)
+
+            # compute loss
+            #This function returns the index of the maximum value in each column of the one-hot encoded y tensor.
+            #The dim=0 argument specifies that the function should return the index along the first dimension of the tensor, which corresponds to the batch size.
+            test_loss = criterion(y_hat, torch.argmax(y, dim = 0))
+            test_losses.append(test_loss.item())
+
+            #compute predictions and accuracy 
+            # predictions is a tensor of shape (1, batch_size). 
+            # Each element in this tensor represents the predicted class label for the corresponding input image in the batch
+            #torch.max() is used to get the index of the maximum value in the tensor y_hat along the 0-th dimension
+            
+            _, predictions = torch.max(y_hat, 0)
+
+            predictions = np.array(predictions)
+            labels = np.array(labels)
+
+            total += y.size(1)
+            correct += (predictions == labels).sum().item()
+        test_accuracy = correct / total
+        accuracy.append(test_accuracy)     
+        
+
+Modify the model above to calculate test error of each epoch of the following problem. Consider the following 3-layer neural network.
+
+\[
+\hat{y} = f(x) = g(W_3\sigma(W_2\sigma(W_1x)))
+\]
+
+Suppose $x \in \mathbb{R}^d$, $W_1 \in \mathbb{R}^{d_1 \times d}$, $W_2 \in \mathbb{R}^{d_2 \times d_1}$, $W_3 \in \mathbb{R}^{k \times d_2}$ i.e. $f: \mathbb{R}^d \rightarrow \mathbb{R}^k$, Let $\sigma(z) = [\sigma(z_1), ..., \sigma(z_n)]$ for any $z \in \mathbb{R}^n$ where $\sigma(z) = \frac{1}{1 + e^{-z}}$ is the sigmoid (logistic) activation function and $g(z_i) = \frac{exp(z_i)}{\sum_{i=1}^k exp(z_i)}$ is the softmax function. Suppose the true pair is $(x, y)$ where $y \in \{0, 1\}^k$ with exactly one of the entries equal to 1, and you are working with the cross-entropy loss function given below,
+
+\[
+L(x, y) = -\sum_{i=1}^k y \text{log}(\hat{y})
+\]
+
+ \item Implement it in NumPy or PyTorch using basic linear algebra operations. (e.g. You are not allowed to use auto-grad, built-in optimizer, model, etc. in this step. You can use library functions for data loading, processing, etc.). Evaluate your implementation on MNIST dataset, report test errors and learning curve. (10 pts)
