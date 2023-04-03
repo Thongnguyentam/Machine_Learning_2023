@@ -1,0 +1,61 @@
+
+The Lloyd's KMeans algorithm aims to minimize: $J = \sum_{i=1}^{k}\sum_{x \in C_i}||x - \mu_i||^2$
+
+where k is the number of clusters, $C_i$ is the i-th cluster, and $\mu_i$ is the centroid of the i-th cluster.
+
+Let J(t) denote the objective function at iteration t. Let J(t+1) denote the objective function at the next iteration. We have have the objective function at iteration t:
+
+$J(t) = \sum_{i=1}^{k}\sum_{x \in C_i}||x - \mu_i(t)||^2$
+
+where $\mu_i(t)$ is the centroid of the i-th cluster at iteration t.
+
+At iteration t+1, we have updated the centroids, so $\mu_i(t+1)$ is different from $\mu_i(t)$ for some i, $C'_i$ is the set of data points assigned to cluster i at iteration t+1. We have the objective function:
+
+$J(t+1) = \sum_{i=1}^{k}\sum_{x \in C'_i}||x - \mu_i(t+1)||^2$
+
+Since the algorithm assigns each data point to the nearest centroid, we have:
+
+$\sum_{x \in C_i}||x - \mu_i(t+1)||^2 \leq \sum_{x \in C_i}||x - \mu_j(t+1)||^2$
+
+for all x in $C_i$ and all j not equal to i. This inequality holds because $\mu_i(t+1)$ is the centroid of $C'_i$, which is the set of data points assigned to cluster i at iteration t+1. Similarly, we have:
+
+$\sum_{x \in C_j}||x - \mu_j(t+1)||^2 \leq \sum_{x \in C_j}||x - \mu_i(t+1)||^2$
+
+for all j not equal to i. Therefore, we have:
+
+$\sum_{x \in C_i}||x - \mu_i(t+1)||^2 + \sum_{x \in C_j}||x - \mu_j(t+1)||^2 \leq \sum_{x \in C_j}||x - \mu_i(t+1)||^2 + \sum_{x \in C_i}||x - \mu_j(t+1)||^2$
+Begin with $J(t+1) = \sum_{i=1}^{k}\sum_{x \in C'_i}||x - \mu_i(t+1)||^2$
+$$ = \sum_{i=1}^{k}(\sum_{x \in C_i}||x - \mu_i(t+1)||^2 + \sum_{j \ne i, x \in C_j}||x - \mu_j(t+1)||^2)$$
+$$\leq \sum_{i=1}^{k}(\sum_{x \in C_i}||x - \mu_j(t+1)||^2 + \sum_{j \ne i, x \in C_j}||x - \mu_i(t+1)||^2)$$
+
+Sure!
+
+The two inequalities we have are:
+
+$\sum_{x \in C_i}||x - \mu_i(t+1)||^2 \leq \sum_{x \in C_i}||x - \mu_j(t+1)||^2$ for all j not equal to i.
+
+$\sum_{x \in C_j}||x - \mu_j(t+1)||^2 \leq \sum_{x \in C_j}||x - \mu_i(t+1)||^2$ for all j not equal to i.
+
+Now, let's use these inequalities to see how $J(t+1)$ relates to $J(t)$:
+
+$J(t+1) = \sum_{i=1}^{k}\sum_{x \in C'_i}||x - \mu_i(t+1)||^2$ (from the formula for $J(t+1)$)
+
+$= \sum_{i=1}^{k} \left(\sum_{x \in C_i}||x - \mu_i(t+1)||^2 + \sum_{j\neq i, x \in C_j}||x - \mu_i(t+1)||^2 \right)$ (splitting the summation over all clusters into one for the updated cluster and one for the other clusters)
+
+$\leq \sum_{i=1}^{k} \left(\sum_{x \in C_i}||x - \mu_j(t+1)||^2 + \sum_{j\neq i, x \in C_j}||x - \mu_i(t+1)||^2 \right)$ (using the inequality for cluster $C_i$ with all $j$ not equal to $i$ in the first term)
+
+$= \sum_{i=1}^{k}\sum_{x \in C'_j}||x - \mu_j(t+1)||^2$ (merging the two sums into one sum over all clusters)
+
+$= J(t)$ (from the formula for $J(t)$)
+
+Therefore, we have $J(t+1) \leq J(t)$.
+
+The equation $\left(\sum_{x \in C_i}||x - \mu_j(t+1)||^2 + \sum_{j\neq i, x \in C_j}||x - \mu_i(t+1)||^2 \right) = \sum_{x \in C'_j}||x - \mu_j(t+1)||^2$ comes from the fact that each data point is assigned to one and only one cluster at each iteration of the KMeans algorithm.
+
+At iteration $t+1$, the algorithm assigns each data point to the nearest centroid, which determines the clusters $C'_i$ for each centroid $\mu_i(t+1)$. Therefore, each data point $x$ belongs to exactly one cluster $C'_j$, where $j$ is the index of the centroid that is closest to $x$.
+
+The left-hand side of the equation sums over all data points in the original clusters $C_i$ and over all data points in the other clusters $C_j$ where $j \neq i$. This sum includes all data points in the dataset, but some data points may be counted more than once.
+
+On the other hand, the right-hand side of the equation sums over all data points in the updated clusters $C'_j$. Each data point is counted exactly once in this sum, since it belongs to exactly one updated cluster. Therefore, the two sums are equal, and we can write:
+
+$\left(\sum_{x \in C_i}||x - \mu_j(t+1)||^2 + \sum_{j\neq i, x \in C_j}||x - \mu_i(t+1)||^2 \right) = \sum_{x \in C'_j}||x - \mu_j(t+1)||^2$
